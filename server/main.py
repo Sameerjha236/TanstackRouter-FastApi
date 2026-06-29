@@ -1,7 +1,8 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from routes.UserRoute import router as UserRouter
-from routes.AuthRoute import router as AuhtRouter
+from routes.AuthRoute import router as AuthRouter
+from routes.TodoRoute import router as TodoRouter
 
 
 app = FastAPI()
@@ -22,9 +23,11 @@ app.add_middleware(
 )
 
 app.include_router(UserRouter)
-app.include_router(AuhtRouter)
+app.include_router(AuthRouter)
+app.include_router(TodoRouter)
 
 
 @app.get("/")
 def read_root():
     return "app is running"
+
