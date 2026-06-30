@@ -11,118 +11,59 @@
 import { createFileRoute } from '@tanstack/react-router'
 
 import { Route as rootRouteImport } from './routes/__root'
-import { Route as SignupRouteImport } from './routes/signup'
-import { Route as PostsIndexRouteImport } from './routes/posts/index'
-import { Route as PostsIdRouteImport } from './routes/posts/$id'
 
-const LoginLazyRouteImport = createFileRoute('/login')()
-const DashboardLazyRouteImport = createFileRoute('/dashboard')()
 const IndexLazyRouteImport = createFileRoute('/')()
+const TodosIndexLazyRouteImport = createFileRoute('/todos/')()
+const TodosIdLazyRouteImport = createFileRoute('/todos/$id')()
 
-const LoginLazyRoute = LoginLazyRouteImport.update({
-  id: '/login',
-  path: '/login',
-  getParentRoute: () => rootRouteImport,
-} as any).lazy(() => import('./routes/login.lazy').then((d) => d.Route))
-const DashboardLazyRoute = DashboardLazyRouteImport.update({
-  id: '/dashboard',
-  path: '/dashboard',
-  getParentRoute: () => rootRouteImport,
-} as any).lazy(() => import('./routes/dashboard.lazy').then((d) => d.Route))
-const SignupRoute = SignupRouteImport.update({
-  id: '/signup',
-  path: '/signup',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const IndexLazyRoute = IndexLazyRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any).lazy(() => import('./routes/index.lazy').then((d) => d.Route))
-const PostsIndexRoute = PostsIndexRouteImport.update({
-  id: '/posts/',
-  path: '/posts/',
+const TodosIndexLazyRoute = TodosIndexLazyRouteImport.update({
+  id: '/todos/',
+  path: '/todos/',
   getParentRoute: () => rootRouteImport,
-} as any)
-const PostsIdRoute = PostsIdRouteImport.update({
-  id: '/posts/$id',
-  path: '/posts/$id',
+} as any).lazy(() => import('./routes/todos/index.lazy').then((d) => d.Route))
+const TodosIdLazyRoute = TodosIdLazyRouteImport.update({
+  id: '/todos/$id',
+  path: '/todos/$id',
   getParentRoute: () => rootRouteImport,
-} as any)
+} as any).lazy(() => import('./routes/todos/$id.lazy').then((d) => d.Route))
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexLazyRoute
-  '/signup': typeof SignupRoute
-  '/dashboard': typeof DashboardLazyRoute
-  '/login': typeof LoginLazyRoute
-  '/posts/$id': typeof PostsIdRoute
-  '/posts/': typeof PostsIndexRoute
+  '/todos/$id': typeof TodosIdLazyRoute
+  '/todos/': typeof TodosIndexLazyRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexLazyRoute
-  '/signup': typeof SignupRoute
-  '/dashboard': typeof DashboardLazyRoute
-  '/login': typeof LoginLazyRoute
-  '/posts/$id': typeof PostsIdRoute
-  '/posts': typeof PostsIndexRoute
+  '/todos/$id': typeof TodosIdLazyRoute
+  '/todos': typeof TodosIndexLazyRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexLazyRoute
-  '/signup': typeof SignupRoute
-  '/dashboard': typeof DashboardLazyRoute
-  '/login': typeof LoginLazyRoute
-  '/posts/$id': typeof PostsIdRoute
-  '/posts/': typeof PostsIndexRoute
+  '/todos/$id': typeof TodosIdLazyRoute
+  '/todos/': typeof TodosIndexLazyRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths:
-    '/' | '/signup' | '/dashboard' | '/login' | '/posts/$id' | '/posts/'
+  fullPaths: '/' | '/todos/$id' | '/todos/'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/signup' | '/dashboard' | '/login' | '/posts/$id' | '/posts'
-  id:
-    | '__root__'
-    | '/'
-    | '/signup'
-    | '/dashboard'
-    | '/login'
-    | '/posts/$id'
-    | '/posts/'
+  to: '/' | '/todos/$id' | '/todos'
+  id: '__root__' | '/' | '/todos/$id' | '/todos/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexLazyRoute: typeof IndexLazyRoute
-  SignupRoute: typeof SignupRoute
-  DashboardLazyRoute: typeof DashboardLazyRoute
-  LoginLazyRoute: typeof LoginLazyRoute
-  PostsIdRoute: typeof PostsIdRoute
-  PostsIndexRoute: typeof PostsIndexRoute
+  TodosIdLazyRoute: typeof TodosIdLazyRoute
+  TodosIndexLazyRoute: typeof TodosIndexLazyRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    '/login': {
-      id: '/login'
-      path: '/login'
-      fullPath: '/login'
-      preLoaderRoute: typeof LoginLazyRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/dashboard': {
-      id: '/dashboard'
-      path: '/dashboard'
-      fullPath: '/dashboard'
-      preLoaderRoute: typeof DashboardLazyRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/signup': {
-      id: '/signup'
-      path: '/signup'
-      fullPath: '/signup'
-      preLoaderRoute: typeof SignupRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/': {
       id: '/'
       path: '/'
@@ -130,18 +71,18 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexLazyRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/posts/': {
-      id: '/posts/'
-      path: '/posts'
-      fullPath: '/posts/'
-      preLoaderRoute: typeof PostsIndexRouteImport
+    '/todos/': {
+      id: '/todos/'
+      path: '/todos'
+      fullPath: '/todos/'
+      preLoaderRoute: typeof TodosIndexLazyRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/posts/$id': {
-      id: '/posts/$id'
-      path: '/posts/$id'
-      fullPath: '/posts/$id'
-      preLoaderRoute: typeof PostsIdRouteImport
+    '/todos/$id': {
+      id: '/todos/$id'
+      path: '/todos/$id'
+      fullPath: '/todos/$id'
+      preLoaderRoute: typeof TodosIdLazyRouteImport
       parentRoute: typeof rootRouteImport
     }
   }
@@ -149,11 +90,8 @@ declare module '@tanstack/react-router' {
 
 const rootRouteChildren: RootRouteChildren = {
   IndexLazyRoute: IndexLazyRoute,
-  SignupRoute: SignupRoute,
-  DashboardLazyRoute: DashboardLazyRoute,
-  LoginLazyRoute: LoginLazyRoute,
-  PostsIdRoute: PostsIdRoute,
-  PostsIndexRoute: PostsIndexRoute,
+  TodosIdLazyRoute: TodosIdLazyRoute,
+  TodosIndexLazyRoute: TodosIndexLazyRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

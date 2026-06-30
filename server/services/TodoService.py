@@ -8,6 +8,12 @@ class TodoService:
     def get_all(self):
         return [todo.to_dict() for todo in self.todos]
 
+    def get(self, todo_id: int):
+        for todo in self.todos:
+            if todo.id == todo_id:
+                return todo.to_dict()
+        return None
+
     def add(self, name: str, status: str = "pending"):
         todo = Todo(self._next_id, name, status)
         self.todos.append(todo)
