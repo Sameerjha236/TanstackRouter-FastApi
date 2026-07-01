@@ -30,4 +30,3 @@ app.include_router(TodoRouter)
 @app.get("/")
 def read_root():
     return "app is running"
-
