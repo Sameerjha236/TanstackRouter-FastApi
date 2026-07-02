@@ -1,8 +1,7 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from routes.UserRoute import router as UserRouter
-from routes.AuthRoute import router as AuthRouter
 from routes.TodoRoute import router as TodoRouter
+from routes.AuthRoute import router as AuthRouter
 
 
 app = FastAPI()
@@ -22,9 +21,8 @@ app.add_middleware(
     allow_headers=["*"],  # Allows all headers (Content-Type, Authorization, etc.)
 )
 
-app.include_router(UserRouter)
-app.include_router(AuthRouter)
 app.include_router(TodoRouter)
+app.include_router(AuthRouter)
 
 
 @app.get("/")

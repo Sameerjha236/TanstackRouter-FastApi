@@ -1,15 +1,18 @@
-from fastapi import APIRouter
-from controllers.AuthController import login, signup
-from schemas.UserType import UserType
+from fastapi import APIRouter, Depends
+from sqlalchemy.orm import Session
+from database import get_db
+from controllers.AuthController import signUp, signIn
+from schemas.UserType import User
+
 
 router = APIRouter(prefix="/auth")
 
 
 @router.post("/signup")
-def signup_route(user: UserType):
-    return signup(user)
+def signup(user: User, db: Session = Depends(get_db)):
+    return signUp(user, db)
 
 
 @router.post("/login")
-def login_route(user: UserType):
-    return login(user)
+def login(user: User, db: Session = Depends(get_db)):
+    return signIn(user, db)
