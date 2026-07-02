@@ -1,20 +1,22 @@
 from sqlalchemy.orm import Session
 from models.user_db import UserModel
 from schemas.UserType import User
+from utils.Crypto import CryptoHelper
 
 
 class AuthService:
     @staticmethod
     def createUser(userData: User, db: Session):
-        # Check if user already exists
+        # Adjusted to use userData.username
         existing_user = (
             db.query(UserModel).filter(UserModel.username == userData.username).first()
         )
         if existing_user:
             return False
 
-        # Create new user instance
-        new_user = UserModel(username=userData.username, password=userData.password)
+        hashed_password = CryptoHelper.hash_password(userData.password)
+
+        new_user = UserModel(username=userData.username, password=hashed_password)
 
         db.add(new_user)
         db.commit()
@@ -23,17 +25,14 @@ class AuthService:
 
     @staticmethod
     def checkUserCredentials(userData: User, db: Session):
-        # Find the user by username
         existing_user = (
             db.query(UserModel).filter(UserModel.username == userData.username).first()
         )
 
-        # If user does not exist, credentials are invalid
         if not existing_user:
             return False
 
-        # Check if the password matches
-        if existing_user.password != userData.password:
+        if not CryptoHelper.verify_password(userData.password, existing_user.password):
             return False
 
-        return True
+        return existing_user  # Return the user object instead of True

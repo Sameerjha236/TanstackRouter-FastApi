@@ -1,8 +1,8 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, Depends
 from fastapi.middleware.cors import CORSMiddleware
 from routes.TodoRoute import router as TodoRouter
 from routes.AuthRoute import router as AuthRouter
-
+from utils.auth import require_auth
 
 app = FastAPI()
 
@@ -21,8 +21,8 @@ app.add_middleware(
     allow_headers=["*"],  # Allows all headers (Content-Type, Authorization, etc.)
 )
 
-app.include_router(TodoRouter)
 app.include_router(AuthRouter)
+app.include_router(TodoRouter, dependencies=[Depends(require_auth)])
 
 
 @app.get("/")
