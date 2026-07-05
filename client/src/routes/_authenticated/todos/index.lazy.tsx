@@ -1,7 +1,7 @@
 import { createLazyFileRoute, Link } from "@tanstack/react-router";
-import { useTodos } from "../../hooks/useTodos";
+import { useTodos } from "../../../hooks/useTodos";
 
-export const Route = createLazyFileRoute("/todos/")({
+export const Route = createLazyFileRoute("/_authenticated/todos/")({
   component: RouteComponent,
 });
 

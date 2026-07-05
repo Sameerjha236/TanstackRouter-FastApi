@@ -6,4 +6,9 @@ export const ENDPOINTS = {
     updateTodo: (id: string | number) => `todos/${id}`,
     deleteTodo: (id: string | number) => `todos/${id}`,
   },
+  AUTH: {
+    login: "auth/login",
+    signup: "auth/signup",
+    me: "auth/me",
+  },
 };

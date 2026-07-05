@@ -11,69 +11,140 @@
 import { createFileRoute } from '@tanstack/react-router'
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as AuthenticatedRouteImport } from './routes/_authenticated'
+import { Route as AuthRouteImport } from './routes/_auth'
 
 const IndexLazyRouteImport = createFileRoute('/')()
-const UserIndexLazyRouteImport = createFileRoute('/user/')()
-const TodosIndexLazyRouteImport = createFileRoute('/todos/')()
-const TodosIdLazyRouteImport = createFileRoute('/todos/$id')()
+const AuthenticatedUserIndexLazyRouteImport = createFileRoute(
+  '/_authenticated/user/',
+)()
+const AuthenticatedTodosIndexLazyRouteImport = createFileRoute(
+  '/_authenticated/todos/',
+)()
+const AuthSignupIndexLazyRouteImport = createFileRoute('/_auth/signup/')()
+const AuthLoginIndexLazyRouteImport = createFileRoute('/_auth/login/')()
+const AuthenticatedTodosIdLazyRouteImport = createFileRoute(
+  '/_authenticated/todos/$id',
+)()
 
+const AuthenticatedRoute = AuthenticatedRouteImport.update({
+  id: '/_authenticated',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AuthRoute = AuthRouteImport.update({
+  id: '/_auth',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const IndexLazyRoute = IndexLazyRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any).lazy(() => import('./routes/index.lazy').then((d) => d.Route))
-const UserIndexLazyRoute = UserIndexLazyRouteImport.update({
-  id: '/user/',
-  path: '/user/',
-  getParentRoute: () => rootRouteImport,
-} as any).lazy(() => import('./routes/user/index.lazy').then((d) => d.Route))
-const TodosIndexLazyRoute = TodosIndexLazyRouteImport.update({
-  id: '/todos/',
-  path: '/todos/',
-  getParentRoute: () => rootRouteImport,
-} as any).lazy(() => import('./routes/todos/index.lazy').then((d) => d.Route))
-const TodosIdLazyRoute = TodosIdLazyRouteImport.update({
-  id: '/todos/$id',
-  path: '/todos/$id',
-  getParentRoute: () => rootRouteImport,
-} as any).lazy(() => import('./routes/todos/$id.lazy').then((d) => d.Route))
+const AuthenticatedUserIndexLazyRoute =
+  AuthenticatedUserIndexLazyRouteImport.update({
+    id: '/user/',
+    path: '/user/',
+    getParentRoute: () => AuthenticatedRoute,
+  } as any).lazy(() =>
+    import('./routes/_authenticated/user/index.lazy').then((d) => d.Route),
+  )
+const AuthenticatedTodosIndexLazyRoute =
+  AuthenticatedTodosIndexLazyRouteImport.update({
+    id: '/todos/',
+    path: '/todos/',
+    getParentRoute: () => AuthenticatedRoute,
+  } as any).lazy(() =>
+    import('./routes/_authenticated/todos/index.lazy').then((d) => d.Route),
+  )
+const AuthSignupIndexLazyRoute = AuthSignupIndexLazyRouteImport.update({
+  id: '/signup/',
+  path: '/signup/',
+  getParentRoute: () => AuthRoute,
+} as any).lazy(() =>
+  import('./routes/_auth/signup/index.lazy').then((d) => d.Route),
+)
+const AuthLoginIndexLazyRoute = AuthLoginIndexLazyRouteImport.update({
+  id: '/login/',
+  path: '/login/',
+  getParentRoute: () => AuthRoute,
+} as any).lazy(() =>
+  import('./routes/_auth/login/index.lazy').then((d) => d.Route),
+)
+const AuthenticatedTodosIdLazyRoute =
+  AuthenticatedTodosIdLazyRouteImport.update({
+    id: '/todos/$id',
+    path: '/todos/$id',
+    getParentRoute: () => AuthenticatedRoute,
+  } as any).lazy(() =>
+    import('./routes/_authenticated/todos/$id.lazy').then((d) => d.Route),
+  )
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexLazyRoute
-  '/todos/$id': typeof TodosIdLazyRoute
-  '/todos/': typeof TodosIndexLazyRoute
-  '/user/': typeof UserIndexLazyRoute
+  '/todos/$id': typeof AuthenticatedTodosIdLazyRoute
+  '/login/': typeof AuthLoginIndexLazyRoute
+  '/signup/': typeof AuthSignupIndexLazyRoute
+  '/todos/': typeof AuthenticatedTodosIndexLazyRoute
+  '/user/': typeof AuthenticatedUserIndexLazyRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexLazyRoute
-  '/todos/$id': typeof TodosIdLazyRoute
-  '/todos': typeof TodosIndexLazyRoute
-  '/user': typeof UserIndexLazyRoute
+  '/todos/$id': typeof AuthenticatedTodosIdLazyRoute
+  '/login': typeof AuthLoginIndexLazyRoute
+  '/signup': typeof AuthSignupIndexLazyRoute
+  '/todos': typeof AuthenticatedTodosIndexLazyRoute
+  '/user': typeof AuthenticatedUserIndexLazyRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexLazyRoute
-  '/todos/$id': typeof TodosIdLazyRoute
-  '/todos/': typeof TodosIndexLazyRoute
-  '/user/': typeof UserIndexLazyRoute
+  '/_auth': typeof AuthRouteWithChildren
+  '/_authenticated': typeof AuthenticatedRouteWithChildren
+  '/_authenticated/todos/$id': typeof AuthenticatedTodosIdLazyRoute
+  '/_auth/login/': typeof AuthLoginIndexLazyRoute
+  '/_auth/signup/': typeof AuthSignupIndexLazyRoute
+  '/_authenticated/todos/': typeof AuthenticatedTodosIndexLazyRoute
+  '/_authenticated/user/': typeof AuthenticatedUserIndexLazyRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/todos/$id' | '/todos/' | '/user/'
+  fullPaths: '/' | '/todos/$id' | '/login/' | '/signup/' | '/todos/' | '/user/'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/todos/$id' | '/todos' | '/user'
-  id: '__root__' | '/' | '/todos/$id' | '/todos/' | '/user/'
+  to: '/' | '/todos/$id' | '/login' | '/signup' | '/todos' | '/user'
+  id:
+    | '__root__'
+    | '/'
+    | '/_auth'
+    | '/_authenticated'
+    | '/_authenticated/todos/$id'
+    | '/_auth/login/'
+    | '/_auth/signup/'
+    | '/_authenticated/todos/'
+    | '/_authenticated/user/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexLazyRoute: typeof IndexLazyRoute
-  TodosIdLazyRoute: typeof TodosIdLazyRoute
-  TodosIndexLazyRoute: typeof TodosIndexLazyRoute
-  UserIndexLazyRoute: typeof UserIndexLazyRoute
+  AuthRoute: typeof AuthRouteWithChildren
+  AuthenticatedRoute: typeof AuthenticatedRouteWithChildren
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/_authenticated': {
+      id: '/_authenticated'
+      path: ''
+      fullPath: '/'
+      preLoaderRoute: typeof AuthenticatedRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/_auth': {
+      id: '/_auth'
+      path: ''
+      fullPath: '/'
+      preLoaderRoute: typeof AuthRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/': {
       id: '/'
       path: '/'
@@ -81,35 +152,76 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexLazyRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/user/': {
-      id: '/user/'
+    '/_authenticated/user/': {
+      id: '/_authenticated/user/'
       path: '/user'
       fullPath: '/user/'
-      preLoaderRoute: typeof UserIndexLazyRouteImport
-      parentRoute: typeof rootRouteImport
+      preLoaderRoute: typeof AuthenticatedUserIndexLazyRouteImport
+      parentRoute: typeof AuthenticatedRoute
     }
-    '/todos/': {
-      id: '/todos/'
+    '/_authenticated/todos/': {
+      id: '/_authenticated/todos/'
       path: '/todos'
       fullPath: '/todos/'
-      preLoaderRoute: typeof TodosIndexLazyRouteImport
-      parentRoute: typeof rootRouteImport
+      preLoaderRoute: typeof AuthenticatedTodosIndexLazyRouteImport
+      parentRoute: typeof AuthenticatedRoute
     }
-    '/todos/$id': {
-      id: '/todos/$id'
+    '/_auth/signup/': {
+      id: '/_auth/signup/'
+      path: '/signup'
+      fullPath: '/signup/'
+      preLoaderRoute: typeof AuthSignupIndexLazyRouteImport
+      parentRoute: typeof AuthRoute
+    }
+    '/_auth/login/': {
+      id: '/_auth/login/'
+      path: '/login'
+      fullPath: '/login/'
+      preLoaderRoute: typeof AuthLoginIndexLazyRouteImport
+      parentRoute: typeof AuthRoute
+    }
+    '/_authenticated/todos/$id': {
+      id: '/_authenticated/todos/$id'
       path: '/todos/$id'
       fullPath: '/todos/$id'
-      preLoaderRoute: typeof TodosIdLazyRouteImport
-      parentRoute: typeof rootRouteImport
+      preLoaderRoute: typeof AuthenticatedTodosIdLazyRouteImport
+      parentRoute: typeof AuthenticatedRoute
     }
   }
 }
 
+interface AuthRouteChildren {
+  AuthLoginIndexLazyRoute: typeof AuthLoginIndexLazyRoute
+  AuthSignupIndexLazyRoute: typeof AuthSignupIndexLazyRoute
+}
+
+const AuthRouteChildren: AuthRouteChildren = {
+  AuthLoginIndexLazyRoute: AuthLoginIndexLazyRoute,
+  AuthSignupIndexLazyRoute: AuthSignupIndexLazyRoute,
+}
+
+const AuthRouteWithChildren = AuthRoute._addFileChildren(AuthRouteChildren)
+
+interface AuthenticatedRouteChildren {
+  AuthenticatedTodosIdLazyRoute: typeof AuthenticatedTodosIdLazyRoute
+  AuthenticatedTodosIndexLazyRoute: typeof AuthenticatedTodosIndexLazyRoute
+  AuthenticatedUserIndexLazyRoute: typeof AuthenticatedUserIndexLazyRoute
+}
+
+const AuthenticatedRouteChildren: AuthenticatedRouteChildren = {
+  AuthenticatedTodosIdLazyRoute: AuthenticatedTodosIdLazyRoute,
+  AuthenticatedTodosIndexLazyRoute: AuthenticatedTodosIndexLazyRoute,
+  AuthenticatedUserIndexLazyRoute: AuthenticatedUserIndexLazyRoute,
+}
+
+const AuthenticatedRouteWithChildren = AuthenticatedRoute._addFileChildren(
+  AuthenticatedRouteChildren,
+)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexLazyRoute: IndexLazyRoute,
-  TodosIdLazyRoute: TodosIdLazyRoute,
-  TodosIndexLazyRoute: TodosIndexLazyRoute,
-  UserIndexLazyRoute: UserIndexLazyRoute,
+  AuthRoute: AuthRouteWithChildren,
+  AuthenticatedRoute: AuthenticatedRouteWithChildren,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

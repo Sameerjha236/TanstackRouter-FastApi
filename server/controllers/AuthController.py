@@ -40,6 +40,7 @@ def signIn(userData: User, db: Session, response: Response):
         secure=False,  # Ensures cookie is only sent over HTTPS
         samesite="lax",  # Protects against CSRF attacks
         max_age=1800,  # Match token expiration (30 mins in seconds)
+        path="/",
     )
 
     return {"message": "Logged in successfully"}
